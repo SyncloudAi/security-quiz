@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Awareness Check</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#1c2a2a; --ink-soft:#516361; --paper:#f4f6f4; --panel:#ffffff;
+  --line:#d8dfdc; --line-strong:#b9c4c0; --accent:#0d6e63; --accent-ink:#07463f;
+  --accent-soft:#dbeae6; --good:#2f7a45; --good-soft:#dff0e2; --warn:#93630f;
+  --warn-soft:#f3e6c8; --crit:#9c3a2e; --crit-soft:#f6ded9; --neutral-soft:#e7ebe9;
+  --shadow: 0 1px 2px rgba(20,30,28,.05), 0 8px 24px -16px rgba(20,30,28,.2);
+  --serif:'IBM Plex Serif', Georgia, serif;
+  --sans:'IBM Plex Sans','Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e7ede9; --ink-soft:#93a5a1; --paper:#111817; --panel:#161f1e;
+    --line:#283634; --line-strong:#3a4b48; --accent:#57c9b6; --accent-ink:#bdece2;
+    --accent-soft:#1b3230; --good:#7fd08f; --good-soft:#1d3324; --warn:#e4b45c;
+    --warn-soft:#3a3018; --crit:#e28a77; --crit-soft:#3a231e; --neutral-soft:#232f2d;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -16px rgba(0,0,0,.55);
+  }
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.55;}
+h1,h2{font-family:var(--serif); margin:0;}
+code{font-family:var(--mono); background:var(--neutral-soft); padding:.05rem .3rem; border-radius:2px; font-size:.9em;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.page{max-width:38rem; margin:0 auto; padding:2.5rem 1.25rem 4rem;}
+.cover{border:1px solid var(--line-strong); border-radius:3px; background:var(--panel); box-shadow:var(--shadow); padding:1.6rem 1.7rem; margin-bottom:1.5rem;}
+.eyebrow{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); margin:0 0 .5rem;}
+h1{font-size:1.6rem; font-weight:700; margin-bottom:.4rem;}
+.cover .sub{color:var(--ink-soft); font-size:.94rem; margin:0;}
+.briefing{border:1px solid var(--line); border-radius:3px; background:var(--panel); padding:1.4rem 1.6rem; margin-bottom:1.5rem;}
+.briefing h2{font-size:1rem; margin-bottom:.6rem; color:var(--accent-ink);}
+.briefing summary{cursor:pointer; font-weight:600; color:var(--accent-ink); font-size:.92rem; padding:.2rem 0;}
+.briefing-body{margin-top:.8rem; font-size:.9rem;}
+.briefing-body h3{font-size:.88rem; color:var(--accent-ink); margin:.9rem 0 .3rem;}
+.briefing-body ul{margin:.3rem 0; padding-left:1.1rem;}
+.briefing-body li{margin:.15rem 0;}
+.identity{display:flex; flex-direction:column; gap:.7rem; border:1px solid var(--line); border-radius:3px; background:var(--panel); padding:1.3rem 1.5rem; margin-bottom:1.5rem;}
+.identity h2{font-size:.95rem; color:var(--accent-ink);}
+.field{display:flex; flex-direction:column; gap:.3rem;}
+.field label{font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);}
+.field input{font-family:var(--sans); font-size:.95rem; padding:.55rem .7rem; border:1px solid var(--line-strong); border-radius:3px; background:var(--paper); color:var(--ink);}
+.field input:focus{border-color:var(--accent);}
+.qcard{border:1px solid var(--line); border-radius:3px; background:var(--panel); padding:1.3rem 1.5rem; margin-bottom:1rem;}
+.qcard.unanswered-flag{border-color:var(--crit);}
+.qmeta{display:flex; align-items:baseline; gap:.6rem; margin-bottom:.5rem;}
+.qnum{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft);}
+.qtopic{font-family:var(--mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-ink); background:var(--accent-soft); padding:.15rem .45rem; border-radius:2px;}
+.qtext{font-size:1rem; font-weight:600; margin:.3rem 0 .8rem;}
+.options{display:flex; flex-direction:column; gap:.5rem;}
+.opt{display:flex; align-items:flex-start; gap:.6rem; padding:.55rem .7rem; border:1px solid var(--line); border-radius:3px; cursor:pointer; font-size:.92rem;}
+.opt:hover{border-color:var(--accent);}
+.opt input{margin-top:.2rem; accent-color:var(--accent);}
+.opt.checked{border-color:var(--accent); background:var(--accent-soft);}
+.submit-row{display:flex; justify-content:center; margin-top:1.6rem;}
+.submit-btn{font-family:var(--sans); font-weight:600; font-size:.98rem; color:#fff; background:var(--accent); border:none; border-radius:4px; padding:.85rem 2.2rem; cursor:pointer; box-shadow:var(--shadow);}
+.submit-btn:hover{background:var(--accent-ink);}
+.hint{text-align:center; color:var(--crit); font-size:.85rem; margin-top:.6rem; min-height:1.2em;}
+.result{border-radius:4px; padding:1.6rem 1.7rem; margin-bottom:1.5rem; box-shadow:var(--shadow);}
+.result.pass{background:var(--good-soft); border:1px solid var(--good);}
+.result.fail{background:var(--crit-soft); border:1px solid var(--crit);}
+.result h2{font-size:1.25rem; margin-bottom:.4rem;}
+.result.pass h2{color:var(--good);}
+.result.fail h2{color:var(--crit);}
+.result p{margin:.3rem 0; font-size:.95rem;}
+.result .score{font-family:var(--mono); font-weight:600; font-size:1.1rem;}
+.send-btn, .retry-btn{margin-top:.9rem; margin-right:.6rem; font-family:var(--sans); font-weight:600; font-size:.9rem; border-radius:4px; padding:.6rem 1.3rem; cursor:pointer; text-decoration:none; display:inline-block;}
+.send-btn{color:#fff; background:var(--good); border:none;}
+.retry-btn{color:var(--accent-ink); background:var(--panel); border:1px solid var(--accent);}
+[hidden]{display:none !important;}
+@media (max-width:640px){.cover,.briefing,.identity,.qcard{padding:1.1rem 1.2rem;}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <p class="eyebrow">SynCloud.ai &middot; SOC 2 Control 1.4.2</p>
+    <h1>Annual Security Awareness Check</h1>
+    <p class="sub">Read the briefing below, then answer all 10 questions. Passing score is 8/10 — you can retake it as many times as you need.</p>
+  </div>
+
+  <div class="briefing">
+    <h2>Security Guidelines &amp; Best Practices</h2>
+    <p style="color:var(--ink-soft); font-size:.9rem; margin:0;">We're a small team (~12 people) handling sensitive infrastructure data for our customers. This isn't a compliance formality — it's the reason customers trust us with read access to their cloud environments.</p>
+    <details open>
+      <summary>Read the full briefing</summary>
+      <div class="briefing-body">
+        <h3>1. Phishing</h3>
+        <ul>
+          <li>Check the sender address carefully, not just the display name.</li>
+          <li>Never enter your password after clicking a link in an email — go to the site directly instead.</li>
+          <li>If something feels off, it probably is. Report it in <code>#incident-response</code> — even if you're not sure.</li>
+        </ul>
+        <h3>2. MFA &amp; Passwords</h3>
+        <ul>
+          <li>MFA is required on every in-scope company application — not optional.</li>
+          <li>Never share your login with a coworker, even briefly — they get their own account instead.</li>
+          <li>Use a unique password per service.</li>
+        </ul>
+        <h3>3. Devices</h3>
+        <ul>
+          <li>Company laptops must have disk encryption and up-to-date anti-malware protection active.</li>
+          <li>Only install software through the approved process, not random downloads.</li>
+          <li>If your device is lost or stolen, tell us immediately so it can be remotely wiped.</li>
+        </ul>
+        <h3>4. Clear Desk &amp; Screen Lock</h3>
+        <ul>
+          <li>Lock your screen every time you step away — office, café, airport, doesn't matter.</li>
+          <li>Don't leave sensitive material visible to visitors or in public spaces.</li>
+          <li>Visitors are always logged, identified, and escorted — no exceptions.</li>
+        </ul>
+        <h3>5. Incidents &amp; Reporting</h3>
+        <ul>
+          <li>Report anything that might be a security issue in <code>#incident-response</code> right away.</li>
+          <li>You don't need to be certain it's real — reporting a false alarm costs five minutes.</li>
+          <li>Speed is the whole point: the faster something is reported, the smaller the impact.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <form id="quizForm">
+    <div class="identity">
+      <h2>Your details</h2>
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input type="text" id="fullName" name="fullName" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Work email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@syncloud.ai">
+      </div>
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="submit-row">
+      <button type="submit" class="submit-btn" id="submitBtn">Submit answers</button>
+    </div>
+    <p class="hint" id="hintMsg"></p>
+  </form>
+
+  <div id="resultBox" hidden></div>
+
+</div>
+
+<script>
+// EVIDENCE LOG — paste the Apps Script Web App URL here (ends in /exec).
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwUTCyP-4qVKU2AE3gbilqJOR7ELMi7qO43ukcdRjPT7P4UhDlpelz7kkaZ6Xt84ly0/exec";
+
+const QUESTIONS = [
+  { topic:"Phishing", text:"You receive an email that looks like it's from IT, asking you to “verify your Google Workspace password” by clicking a link. What should you do?",
+    options:["Click the link immediately since IT requests are urgent","Reply to the email asking for more details","Do not click the link — report it in #incident-response and verify independently with IT","Forward it to a coworker to see if they got it too"],
+    correct:2 },
+  { topic:"Phishing", text:"You accidentally clicked a phishing link and entered your password before realizing it was fake. What's the right next step?",
+    options:["Do nothing, it was probably fine","Change your password quietly and don't mention it to anyone","Immediately report it in #incident-response and change your password right away","Wait to see if anything suspicious happens before reporting"],
+    correct:2 },
+  { topic:"MFA", text:"Per company policy, multi-factor authentication (MFA) is required on:",
+    options:["Only your email account","Only production/GCP access","All in-scope company applications","Only if you personally want to enable it"],
+    correct:2 },
+  { topic:"Passwords", text:"A coworker asks to borrow your login to quickly check something in a company tool. You should:",
+    options:["Share your password since it's a trusted coworker","Never share credentials — ask them to get their own access instead","Share it, just this once","Share it only if a manager approves verbally"],
+    correct:1 },
+  { topic:"Devices", text:"Why does every company laptop need disk encryption and up-to-date anti-malware protection enabled?",
+    options:["It's optional, just a recommendation","So IT can track your location","To protect company and customer data if the device is lost or stolen","It's only required for the DevOps team"],
+    correct:2 },
+  { topic:"Devices", text:"You need a new app for work that isn't already installed. What's the correct process?",
+    options:["Download and install anything you want — it's your laptop","Install it through the approved MDM/software process, not a random website","Ask a friend to send you the installer","Install it now and tell IT afterward if someone asks"],
+    correct:1 },
+  { topic:"Screen Lock", text:"You step away from your desk — office or café — for a few minutes, laptop unlocked with company systems open. What should you do first?",
+    options:["Nothing, a few minutes is fine","Lock your screen before walking away, every time","Just close the laptop lid","Ask someone nearby to keep an eye on it"],
+    correct:1 },
+  { topic:"Physical Security", text:"A vendor or candidate is visiting the office. What's required?",
+    options:["Let them come in, they're probably fine","Log their visit, identify them as a guest, and escort them the whole time","Have them wait in reception the entire time and nothing else","No process needed for short visits"],
+    correct:1 },
+  { topic:"Incident Reporting", text:"You notice something that might be a security incident — a suspicious login, unexpected access, a weird file. You should:",
+    options:["Investigate it yourself first before telling anyone","Ignore it unless you're 100% sure it's real","Report it in #incident-response right away, even if you're not fully sure","Wait until the next team meeting to mention it"],
+    correct:2 },
+  { topic:"Lost Device", text:"Your company laptop is lost or stolen. What's the very first thing you should do?",
+    options:["Buy a replacement and keep working","Report it immediately so access can be revoked and the device remotely wiped","Wait 24 hours in case it turns up","Only report it if it had sensitive files on it"],
+    correct:1 },
+];
+const PASS_SCORE = 8;
+
+const qDiv = document.getElementById("questions");
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.dataset.qindex = i;
+  const optsHtml = q.options.map((opt, j) => `
+    <label class="opt" data-qi="${i}">
+      <input type="radio" name="q${i}" value="${j}" required>
+      <span>${opt}</span>
+    </label>`).join("");
+  card.innerHTML = `
+    <div class="qmeta"><span class="qnum">Question ${i+1} of ${QUESTIONS.length}</span><span class="qtopic">${q.topic}</span></div>
+    <div class="qtext">${q.text}</div>
+    <div class="options">${optsHtml}</div>`;
+  qDiv.appendChild(card);
+});
+
+qDiv.addEventListener("change", (e) => {
+  if (e.target.type !== "radio") return;
+  const qi = e.target.name;
+  document.querySelectorAll(".opt[data-qi]").forEach(el => {
+    if (`q${el.dataset.qi}` === qi) el.classList.toggle("checked", el.querySelector("input").checked);
+  });
+});
+
+const form = document.getElementById("quizForm");
+const hintMsg = document.getElementById("hintMsg");
+const resultBox = document.getElementById("resultBox");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  hintMsg.textContent = "";
+
+  const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  if (!name || !email) { hintMsg.textContent = "Please enter your name and email."; return; }
+
+  const answers = [];
+  let unanswered = 0;
+  QUESTIONS.forEach((q, i) => {
+    const sel = form.querySelector(`input[name="q${i}"]:checked`);
+    const card = document.querySelector(`.qcard[data-qindex="${i}"]`);
+    if (!sel) { unanswered++; card.classList.add("unanswered-flag"); }
+    else { card.classList.remove("unanswered-flag"); answers.push(Number(sel.value)); }
+  });
+  if (unanswered > 0) { hintMsg.textContent = `Please answer all questions — ${unanswered} left.`; return; }
+
+  const score = answers.reduce((sum, a, i) => sum + (a === QUESTIONS[i].correct ? 1 : 0), 0);
+  const passed = score >= PASS_SCORE;
+  const timestamp = new Date().toISOString();
+
+  form.hidden = true;
+  resultBox.hidden = false;
+  resultBox.className = "result " + (passed ? "pass" : "fail");
+
+  if (passed) {
+    resultBox.innerHTML = `
+      <h2>You passed ✓</h2>
+      <p class="score">Score: ${score} / ${QUESTIONS.length}</p>
+      <p id="logStatus">Recording your result…</p>
+    `;
+    fetch(WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors", // Apps Script doesn't answer CORS preflights — no-cors + text/plain avoids one
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ name, email, score, total: QUESTIONS.length, passed, timestamp }),
+    })
+      .then(() => { document.getElementById("logStatus").textContent = "Recorded — thanks, nothing else needed."; })
+      .catch(() => { document.getElementById("logStatus").textContent = "Couldn't reach the log automatically — please tell Nahar directly so this gets recorded."; });
+  } else {
+    resultBox.innerHTML = `
+      <h2>Not quite — retake needed</h2>
+      <p class="score">Score: ${score} / ${QUESTIONS.length} (need ${PASS_SCORE}/${QUESTIONS.length} to pass)</p>
+      <p>No problem — review the briefing above and try again. Nothing is sent when you don't pass.</p>
+      <button class="retry-btn" id="retryBtn">Retake the quiz</button>
+    `;
+    document.getElementById("retryBtn").addEventListener("click", () => {
+      resultBox.hidden = true;
+      form.hidden = false;
+      form.querySelectorAll('input[type="radio"]:checked').forEach(el => el.checked = false);
+      document.querySelectorAll(".opt.checked").forEach(el => el.classList.remove("checked"));
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  }
+});
+</script>
+</body>
+</html>
